@@ -1,0 +1,56 @@
+import streamlit as st
+import plotly
+import plotly.express as px
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+st.set_page_config(layout="wide")
+
+titanic = pd.read_csv("D:/DS_AI/myproject/titanic.csv")
+
+st.title('TITANIC')
+st.image('./Titanic_Blueprints_Design.gif')
+st.header("Data Visualization")
+st.write(titanic)
+fig = px.pie(titanic, names='Survived', title='Passenger Survival')
+fig1 = px.scatter(titanic, x='Fare', y='Age', color='Survived', size='Fare')
+gender_counts = titanic['Sex'].value_counts().rename_axis('Gender').reset_index(name='GenderCount')
+fig3 = px.bar(gender_counts, x='Gender', y='GenderCount', color='Gender')
+
+col1, col2, col3 = st.columns([1,1,1])
+with col1:
+    if st.button('Pie Chart'):
+        st.plotly_chart(fig)
+
+with col2:
+    if st.button('Scatter Chart'):
+        st.plotly_chart(fig1)
+with col3:
+    if st.button('Bar Chart'):
+        st.plotly_chart(fig3)
+
+visualization = st.sidebar.selectbox('Select Visualization', ('Survival Count', 'Age Distribution', 'Fare Distribution', 'Passenger Class Distribution'))
+
+# Visualize survival count
+if visualization == 'Survival Count':
+    fig = px.histogram(titanic, x='Survived', color='Survived', title='Survival Count')
+    st.plotly_chart(fig)
+
+# Visualize age distribution
+elif visualization == 'Age Distribution':
+    fig, ax = plt.subplots()
+    sns.histplot(data=titanic, x='Age', kde=True, ax=ax)
+    ax.set(title='Age Distribution')
+    st.pyplot(fig)
+
+# Visualize fare distribution
+elif visualization == 'Fare Distribution':
+    fig, ax = plt.subplots()
+    sns.histplot(data=titanic, x='Fare', kde=True, ax=ax)
+    ax.set(title='Fare Distribution')
+    st.pyplot(fig)
+
+# Visualize passenger class distribution
+elif visualization == 'Passenger Class Distribution':
+    fig = px.pie(titanic, names='Pclass', title='Passenger Class Distribution')
+    st.plotly_chart(fig)
